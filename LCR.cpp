@@ -35,6 +35,8 @@ void LCR_Init()
   pinMode(13,OUTPUT);  //Modulino Connector 2
   pinMode(4,OUTPUT);   //Modulino Connector 1
   pinMode(8, OUTPUT);  //Piezzo
+  pinMode(A0, INPUT);  //Right Analog sensor
+  pinMode(A1, INPUT);  //Left Analog sensor
 }
 
 /************************************************************************************************
@@ -174,25 +176,6 @@ void LCR_Turn ( bool dir, int deg, int rate, bool mode )
   LCR_Stop();				//Stop the robot
 }
 
-/***************************************************************************************************
-*	Description:  This function turns the robot LED ON											   *
-*	Arguments:    None		 																	   * 
-*																								   *				   
-***************************************************************************************************/
-LCR_LedON()
-{
-	digitalWrite(2, HIGH);
-}
-/************************************************************************************************
-*	Description:  This function turns the robot LED OFF						      				*
-*	Arguments: None 																			*				
-*	 																							*				   
-************************************************************************************************/
-LCR_LedOFF()
-{
-	digitalWrite(2, LOW);
-}
-
 /************************************************************************************************
 *	Description:  This function stops the robot and reset all the variables that use to	        *
 *				  make movements																*
@@ -210,6 +193,60 @@ void LCR_Stop ()
  countLEFT = 0;
  countRIGHT = 0;
  finishMove = 1;
+}
+
+/***************************************************************************************************
+*	Description:  This function turns the robot LED ON											   *
+*	Arguments:    None		 																	   * 
+*																								   *				   
+***************************************************************************************************/
+void LCR_LedON()
+{
+	digitalWrite(2, HIGH);
+}
+/************************************************************************************************
+*	Description:  This function turns the robot LED OFF						      				*
+*	Arguments: None 																			*				
+*	 																							*				   
+************************************************************************************************/
+void LCR_LedOFF()
+{
+	digitalWrite(2, LOW);
+}
+
+/***************************************************************************************************
+*	Description:  With this function you can make sounds with the robot							   *
+*	Arguments:  																				   *				
+*	 	- Note:	  Musical note that you want reproduce											   *
+*					 DO  	523 Hz															       *
+*					 DOS 	554 Hz															   	   *
+*					 RE		587 Hz															       *
+*					 RES	622 Hz															       *
+*					 MI		659 Hz															       *	
+*					 FA		698 Hz															       *
+*					 FAS	739 Hz															       *
+*					 SOL	783 Hz															       *
+*					 SOLS	830 Hz															       *
+*					 LA		880 Hz															       *	
+*					 LAS	932 Hz															       *		
+*					 SI		987 Hz					   										       * 
+*		- Time: Miliseconds we want to reproduce the sound										   *
+*	This function works like "tone" Adruino's function											   *						 
+***************************************************************************************************/
+
+void LCR_Sound(unsigned int note, unsigned int time)
+{
+	tone (8,note,time);
+}
+
+/************************************************************************************************
+*	Description:  Stops the sound							      								*
+*	Arguments: None  																			*				
+*	 																							*				   
+************************************************************************************************/
+void LCR_NoSound()
+{
+	noTone(8);
 }
 
 /************************************************************************************************
@@ -242,5 +279,113 @@ void Encoder1RIGHT()
    if (countRIGHT >= stepR) 
 	  finishMove = 0;
 }
+
+/***************************************************************************************************
+*	Description:  This function can read from both light sensors, light up a LED (external and	   * 
+*				  connected at digital connector 1) acording with the light level read by the      *
+*				  sensor and send the read value to the serial port								   *
+*	Arguments:  																				   *				
+*	 	- Sensor: 		0 = Right Sensor														   *	
+*						1 = Left Semsor														   	   *
+*	Return:		  Return the value of the lignt measure											   *
+*
+*	By deffect read from right sensor
+*																								   * 				   
+***************************************************************************************************/
+
+int LCR_LightLED(bool sensor)
+{
+	int measure;
+	pinMode(13,OUTPUT);
+	
+	if (sensor == 0)
+	{
+	   measure = analogRead(A0);
+	   analogWrite(13,map(measure, 0, 1023, 0, 255));
+	   Serial.print("Right sensor value=  ");
+	   Serial.println(measure);
+	   delay(250);
+	}
+	else 
+	{
+	   measure = analogRead(A1);
+	   analogWrite(13,map(measure, 0, 1023, 0, 255));
+	   Serial.print("Left sensor value=  ");
+	   Serial.println(measure);
+	   delay(250);
+	}
+  return measure;
+}
+
+/***************************************************************************************************
+*	Description:  This function can read from both light sensors, turn ON-OFF the LED in function  *
+*				  to the read value and one trigger value selected by the usser and send the read  *
+*				  value to the serial port														   *
+*	Arguments:  																				   *				
+*	 	- Sensor: 		0 = Right Sensor														   *	
+*						1 = Left Sensor															   *	
+*		- Trigger:		Value betwen 0-1024 selected by the user that is the limit betwen ON-OFF   *
+*						LED status																   *	
+*	Return:		  Return the value of the lignt measure											   *
+*																								   *
+*	By deffect read from the Right Sensor and set the trigger at 512							   *
+*																								   * 				   
+***************************************************************************************************/
+
+int LCR_LightTrigger(bool sensor, int trig)
+{
+	int measure;
+	
+	if (sensor == 0)
+	{
+	   measure = analogRead(A0);
+	   if (trig > measure)
+	   {
+		 digitalWrite(2, LOW);
+	   }
+	   else
+	   {
+		 digitalWrite(2, HIGH);
+	   }
+	   Serial.print("Right sensor value=  ");
+	   Serial.println(measure);
+	   delay(250);
+	}
+	else 
+	{
+	   measure = analogRead(A1);
+	   if (trig > measure)
+	   {
+		 digitalWrite(2, LOW);
+	   }
+	   else
+	   {
+		 digitalWrite(2, HIGH);
+	   }
+	   Serial.print("Left sensor value=  ");
+	   Serial.println(measure);
+	   delay(250);
+	}
+  return measure;
+}
+/***************************************************************************************************
+*	Description:  This function can read from both light sensors								   *
+*	Arguments:  																				   *				
+*	 	- Sensor: 		0 = Right Sensor														   *	
+*						1 = Left Sensor															   *	
+																								   *	
+*	Return:		  Return the value of the lignt measure											   *
+*																								   *
+*	By deffect read from the Right Sensor and set the trigger at 512							   *
+*																								   * 				   
+***************************************************************************************************/
+
+int LCR_LightSensor(bool sensor)
+{
+	int measure;
+	measure = analogRead(sensor);
+	return measure;
+}
+
 
 #endif
