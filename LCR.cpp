@@ -2,8 +2,9 @@
 #ifndef LCR_h
 #define LCR_h
 
-#include "arduino.h"
-#include "LCR.h"
+#include <arduino.h>
+#include <LCR.h>
+
 
 //Variables
 int countRIGHT =0;
@@ -32,11 +33,15 @@ void LCR_Init()
  // attachInterrupt(digitalPinToInterrupt(10),Encoder1RIGHTT, RISING); //Encoder B motor LEFT
   attachInterrupt(digitalPinToInterrupt(11),Encoder1RIGHT, RISING); //Encoder A motor RIGHT
  // attachInterrupt(digitalPinToInterrupt(12),Encoder1RIGHT, RISING); //Encoder B motor RIGHT
-  pinMode(13,OUTPUT);  //Modulino Connector 2
-  pinMode(4,OUTPUT);   //Modulino Connector 1
+  pinMode(13,INPUT);  //Modulino Connector 2
+  pinMode(4,INPUT);   //Modulino Connector 1
   pinMode(8, OUTPUT);  //Piezzo
   pinMode(A0, INPUT);  //Right Analog sensor
   pinMode(A1, INPUT);  //Left Analog sensor
+  pinMode(A2, INPUT);  //IRArray 3
+  pinMode(A3, INPUT);  //IRArray 2
+  pinMode(A4, INPUT);  //IRArray 1
+
 }
 
 /************************************************************************************************
@@ -368,6 +373,7 @@ int LCR_LightTrigger(bool sensor, int trig)
 	}
   return measure;
 }
+
 /***************************************************************************************************
 *	Description:  This function can read from both light sensors								   *
 *	Arguments:  																				   *				
@@ -375,8 +381,6 @@ int LCR_LightTrigger(bool sensor, int trig)
 *						1 = Left Sensor															   *	
 																								   *	
 *	Return:		  Return the value of the lignt measure											   *
-*																								   *
-*	By deffect read from the Right Sensor and set the trigger at 512							   *
 *																								   * 				   
 ***************************************************************************************************/
 
@@ -387,5 +391,194 @@ int LCR_LightSensor(bool sensor)
 	return measure;
 }
 
+/***************************************************************************************************
+*	Description:  This function can read from both bumpers or any digital sensor				   *
+*	Arguments:  																				   *				
+*	 	- Sensor: 		0 = Right Bumper														   *	
+*						1 = Left Bumper															   *	
+																								   *	
+*	Return:		  Return the value of the lignt measure											   *
+*																								   *
+*	By deffect read from the Right Bumper							  							   *
+*																								   * 				   
+***************************************************************************************************/
 
+int LCR_Bumper(bool sensor)
+{
+	int measure;
+	if (sensor == 0)
+	{
+	  measure = digitalRead(13);
+	}
+	else 
+	{
+		measure = digitalRead(4);
+	}
+	return measure;
+}
+
+/***************************************************************************************************
+*	Description:  This function can read from both bumpers and light up the LED acording with the  *
+*				  status of the bumper															   *
+*	Arguments:  																				   *				
+*	 	- Sensor: 		0 = Right Bumper														   *	
+*						1 = Left Bumper															   *	
+*																								   *	
+*	Return:		  Return the value of the lignt measure											   *
+*																								   *
+*	By deffect read from the Right Bumper														   *
+*																								   * 				   
+***************************************************************************************************/
+
+int LCR_BumperLED(bool sensor)
+{
+	int measure;
+	if (sensor == 0)
+	{
+	  measure = digitalRead(13);
+	  digitalWrite(2, measure);
+	}
+	else 
+	{
+	  measure = digitalRead(4);
+	  digitalWrite(2, measure);
+	}
+	return measure;
+}
+
+/***************************************************************************************************
+*	Description:  This function read the value of the IRArray sensors and send it to the seriial   *
+*				  port																			   *
+*	Arguments:  None																			   *				
+*																								   * 				   
+***************************************************************************************************/
+void LCR_TestIRArray()
+{
+  Serial.println("Sensor Izda   |   Sensor Centro   |   Sensor Dcha   |"); 
+  Serial.println("----------------------------------------------------|");  
+    Serial.print("     ");  
+    Serial.print(analogRead(A4));
+    Serial.print("      |        ");
+    Serial.print(analogRead(A3));
+    Serial.print("        |         ");
+  Serial.print(analogRead(A2));
+  Serial.println("     |");
+  Serial.println("----------------------------------------------------|"); 
+}
+
+/***************************************************************************************************
+*	Description:  This function return 1 when any of the 3 IR sensors read bigger values than      *
+*				  threshold, if read lower, return 0											   *
+*	Arguments:  None																			   *				
+*																								   * 				   
+***************************************************************************************************/
+bool LCR_IRArrayDetect(int threshold)
+{
+	int measure;
+	int s1, s2, s3;
+	measure = analogRead(A4);
+	s1 = measure > threshold ? 1 : 0;
+	measure = analogRead(A3);
+	s2 = measure > threshold ? 1 : 0;
+	measure = analogRead(A2);
+	s3 = measure > threshold ? 1 : 0; 
+
+	return s1|s2|s3;
+}
+/***************************************************************************************************
+*	Description: This funcction moves separately the Left motor								       *
+*	Arguments:  																				   *	
+*		- Dir: Set the movement direction of the motor											   *
+*				!=1 && != 2  -->  Motor Stop												       *
+*				1 		     -->  Motor Forward													   * 				
+*				2            -->  Motor Backward												   *
+*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *	
+*				robot is going to move.															   *
+*				 				   																   *
+***************************************************************************************************/
+void LCR_MotorL(int dir, int rate)
+{
+	if (rate == 0) rate = 25;
+	rate = map (rate, 100, 0, 0,230);
+	
+	if (dir == 1)
+	{
+	 digitalWrite(9, HIGH);
+     analogWrite (3, rate);
+	}
+	else if (dir == 2)
+	{
+	 digitalWrite(3, HIGH);
+     analogWrite (9, rate);
+	}
+	else 
+	{
+	 digitalWrite(9, HIGH);
+     digitalWrite(3, HIGH);
+	}
+}
+
+/***************************************************************************************************
+*	Description: This funcction moves separately the Right motor							       *
+*	Arguments:  																				   *	
+*		- Dir: Set the movement direction of the motor											   *
+*				!=1 && != 2  -->  Motor Stop												       *
+*				1 		     -->  Motor Forward													   * 				
+*				2            -->  Motor Backward												   *
+*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *	
+*				robot is going to move.															   *
+*				 				   																   *				 				   																   *
+***************************************************************************************************/
+void LCR_MotorR(int dir, int rate)
+{
+	if (rate == 0) rate = 25;
+	rate = map (rate, 100, 0, 0,230);
+	
+	if (dir == 1)
+	{
+	 digitalWrite(5, HIGH);
+     analogWrite (6, rate+3);
+	}
+	else if (dir == 2)
+	{
+	 digitalWrite(6, HIGH);
+     analogWrite (5, rate);
+	}
+	else 
+	{
+	 digitalWrite(5, HIGH);
+     digitalWrite(6, HIGH);
+	}
+}
+
+/***************************************************************************************************
+*	Description:      *
+*	Arguments:  None																			   *				
+*																								   * 				   
+***************************************************************************************************/
+void LCR_LineFollower(int threshold, int rate)
+{
+  int measure;
+  if (rate == 0) rate = 25;
+	rate = map (rate, 100, 0, 0,230);
+	
+  measure = analogRead(A4);
+  if (measure > threshold)
+  {
+	  LCR_MotorL(1);
+  }
+  else
+  {
+	  LCR_MotorL(0);
+  }
+  measure = analogRead(A2);
+  if (measure > threshold)
+  {
+	  LCR_MotorR(1);
+  }
+  else
+  {
+	 LCR_MotorR(0);
+  }
+}
 #endif

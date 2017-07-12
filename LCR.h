@@ -1,7 +1,6 @@
 
 
 #define PPV 2048		//Number of the encoder pulses in one turn of the wheel
-#define PI 3.14159		//Pi Number
 
 // Musical Notes
 #define DO  	523
@@ -42,3 +41,10 @@ void Encoder1RIGHT();
 int LCR_LightLED(bool sensor = 0);
 int LCR_LightTrigger(bool sensor = 0, int trig = 512);
 int LCR_LightSensor(bool sensor = 0);
+int LCR_Bumper(bool sensor = 0);
+int LCR_BumperLED(bool sensor = 0);
+void LCR_TestIRArray();
+void LCR_MotorL(int dir, int rate = 0);
+void LCR_MotorR(int dir, int rate = 0);
+void LCR_LineFollower(int threshold, int rate = 0);
+bool LCR_IRArrayDetect(int treshold);
