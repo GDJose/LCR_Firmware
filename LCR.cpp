@@ -1,8 +1,5 @@
 
-#ifndef LCR_h
-#define LCR_h
-
-#include <arduino.h>
+#include <Arduino.h>
 #include <LCR.h>
 
 
@@ -19,7 +16,7 @@ volatile int finishMove = 1;	//Variable to indicate the movement has been finish
 *	 																							*				   
 ************************************************************************************************/
 
-void LCR_Init()
+void LCR::LCR_Init()
 {
   Serial.begin(9600);
   pinMode(2, OUTPUT);  //LED pin
@@ -48,7 +45,8 @@ void LCR_Init()
 *	Description:  This function moves forward and backward the robot							*
 *	Arguments:  																				*				
 *	 	- Dir:		 	0 = Forward																*	
-*						1 = Backward															*
+*					1 = Backward	
+*					FORWARD/BACKWARD														*
 *		- Distance: 	Distance in mm we want to move the robot								*
 *		- Rate:			Number between 0 and 100 that indicate the % speed which the 			*	
 *						robot is going to move. 												*
@@ -58,7 +56,7 @@ void LCR_Init()
 *	To select the values by deffect is no neccesary put any argument between brackets			*				   
 ************************************************************************************************/
 
-void LCR_Move ( bool dir, int distance, int rate )
+void LCR::LCR_Move ( bool dir, int distance, int rate )
 {
   //Select the values by deffect
   if (rate == 0)
@@ -114,7 +112,7 @@ void LCR_Move ( bool dir, int distance, int rate )
 *	To select the values by deffect is no neccesary put any argument between brackets			   * 				   
 ***************************************************************************************************/
 
-void LCR_Turn ( bool dir, int deg, int rate, bool mode )
+void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
 {
   int dist;		//Distance that in mm that should move every wheel during th turn
   
@@ -187,7 +185,7 @@ void LCR_Turn ( bool dir, int deg, int rate, bool mode )
 *	Arguments: None 																			*				
 *	 																							*				   
 ************************************************************************************************/
-void LCR_Stop ()
+void LCR::LCR_Stop ()
 {
  digitalWrite(3, HIGH);
  digitalWrite(9, HIGH);
@@ -205,7 +203,7 @@ void LCR_Stop ()
 *	Arguments:    None		 																	   * 
 *																								   *				   
 ***************************************************************************************************/
-void LCR_LedON()
+void LCR::LCR_LedON()
 {
 	digitalWrite(2, HIGH);
 }
@@ -214,7 +212,7 @@ void LCR_LedON()
 *	Arguments: None 																			*				
 *	 																							*				   
 ************************************************************************************************/
-void LCR_LedOFF()
+void LCR::LCR_LedOFF()
 {
 	digitalWrite(2, LOW);
 }
@@ -239,7 +237,7 @@ void LCR_LedOFF()
 *	This function works like "tone" Adruino's function											   *						 
 ***************************************************************************************************/
 
-void LCR_Sound(unsigned int note, unsigned int time)
+void LCR::LCR_Sound(unsigned int note, unsigned int time)
 {
 	tone (8,note,time);
 }
@@ -249,7 +247,7 @@ void LCR_Sound(unsigned int note, unsigned int time)
 *	Arguments: None  																			*				
 *	 																							*				   
 ************************************************************************************************/
-void LCR_NoSound()
+void LCR::LCR_NoSound()
 {
 	noTone(8);
 }
@@ -260,7 +258,7 @@ void LCR_NoSound()
 *		- Seconds: Number of senconds we want delay												*				
 *	 																							*				   
 ************************************************************************************************/
-void LCR_Delay(float seconds)
+void LCR::LCR_Delay(float seconds)
 {
 	delay(seconds*1000);
 }
@@ -271,14 +269,15 @@ void LCR_Delay(float seconds)
 *	Arguments:  None																		    *										
 *	 																							*				   
 ************************************************************************************************/
-void Encoder1LEFT()
+void LCR::Encoder1LEFT(void)
 {
   countLEFT+=1;
   if (countLEFT >= stepL) 
 	  finishMove = 0;
 }
 
-void Encoder1RIGHT()
+void 
+Encoder1RIGHT(void)
 { 
   countRIGHT+=1;
    if (countRIGHT >= stepR) 
@@ -298,7 +297,7 @@ void Encoder1RIGHT()
 *																								   * 				   
 ***************************************************************************************************/
 
-int LCR_LightLED(bool sensor)
+int LCR::LCR_LightLED(bool sensor)
 {
 	int measure;
 	pinMode(13,OUTPUT);
@@ -337,7 +336,7 @@ int LCR_LightLED(bool sensor)
 *																								   * 				   
 ***************************************************************************************************/
 
-int LCR_LightTrigger(bool sensor, int trig)
+int LCR::LCR_LightTrigger(bool sensor, int trig)
 {
 	int measure;
 	
@@ -384,7 +383,7 @@ int LCR_LightTrigger(bool sensor, int trig)
 *																								   * 				   
 ***************************************************************************************************/
 
-int LCR_LightSensor(bool sensor)
+int LCR::LCR_LightSensor(bool sensor)
 {
 	int measure;
 	measure = analogRead(sensor);
@@ -403,7 +402,7 @@ int LCR_LightSensor(bool sensor)
 *																								   * 				   
 ***************************************************************************************************/
 
-int LCR_Bumper(bool sensor)
+int LCR::LCR_Bumper(bool sensor)
 {
 	int measure;
 	if (sensor == 0)
@@ -430,7 +429,7 @@ int LCR_Bumper(bool sensor)
 *																								   * 				   
 ***************************************************************************************************/
 
-int LCR_BumperLED(bool sensor)
+int LCR::LCR_BumperLED(bool sensor)
 {
 	int measure;
 	if (sensor == 0)
@@ -452,7 +451,7 @@ int LCR_BumperLED(bool sensor)
 *	Arguments:  None																			   *				
 *																								   * 				   
 ***************************************************************************************************/
-void LCR_TestIRArray()
+void LCR::LCR_TestIRArray()
 {
   Serial.println("Sensor Izda   |   Sensor Centro   |   Sensor Dcha   |"); 
   Serial.println("----------------------------------------------------|");  
@@ -472,7 +471,7 @@ void LCR_TestIRArray()
 *	Arguments:  None																			   *				
 *																								   * 				   
 ***************************************************************************************************/
-bool LCR_IRArrayDetect(int threshold)
+bool LCR::LCR_IRArrayDetect(int threshold)
 {
 	int measure;
 	int s1, s2, s3;
@@ -496,7 +495,7 @@ bool LCR_IRArrayDetect(int threshold)
 *				robot is going to move.															   *
 *				 				   																   *
 ***************************************************************************************************/
-void LCR_MotorL(int dir, int rate)
+void LCR::LCR_MotorL(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
@@ -529,7 +528,7 @@ void LCR_MotorL(int dir, int rate)
 *				robot is going to move.															   *
 *				 				   																   *				 				   																   *
 ***************************************************************************************************/
-void LCR_MotorR(int dir, int rate)
+void LCR::LCR_MotorR(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
@@ -556,7 +555,7 @@ void LCR_MotorR(int dir, int rate)
 *	Arguments:  None																			   *				
 *																								   * 				   
 ***************************************************************************************************/
-void LCR_LineFollower(int threshold, int rate)
+void LCR::LCR_LineFollower(int threshold, int rate)
 {
   int measure;
   if (rate == 0) rate = 25;
@@ -581,4 +580,4 @@ void LCR_LineFollower(int threshold, int rate)
 	 LCR_MotorR(0);
   }
 }
-#endif
+
