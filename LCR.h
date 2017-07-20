@@ -27,14 +27,14 @@ extern int countLEFT;
 //make any movement
 extern int stepR;
 extern int stepL;
+
 class LCR{
 	public:
-		
-
-
 
 		//Functions
 		void LCR_Init();
+		static void Encoder1LEFT();
+		static void Encoder1RIGHT();
 		void LCR_Move(bool dir = 0, int distance = 0, int rate = 0);
 		void LCR_Turn(bool dir = 0, int deg = 0, int rate = 0, bool mode = 0);
 		void LCR_Stop ();
@@ -43,8 +43,7 @@ class LCR{
 		void LCR_Delay(float seconds);
 		void LCR_LedON();
 		void LCR_LedOFF();
-		void Encoder1LEFT(void);
-		void Encoder1RIGHT(void);
+
 		int LCR_LightLED(bool sensor = 0);
 		int LCR_LightTrigger(bool sensor = 0, int trig = 512);
 		int LCR_LightSensor(bool sensor = 0);
@@ -56,4 +55,5 @@ class LCR{
 		void LCR_LineFollower(int threshold, int rate = 0);
 		bool LCR_IRArrayDetect(int treshold);
 };
+
 #endif

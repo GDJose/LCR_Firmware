@@ -8,19 +8,20 @@ int countRIGHT =0;
 int countLEFT =0;
 int stepR = 0;
 int stepL = 0;
+
 volatile int finishMove = 1;	//Variable to indicate the movement has been finished
 
 /************************************************************************************************
 *	Description:  This function initialize the standard configuration for the LCR				*
-*	Arguments: None 																			*				
-*	 																							*				   
+*	Arguments: None 																			*
+*	 																							*
 ************************************************************************************************/
 
 void LCR::LCR_Init()
 {
   Serial.begin(9600);
   pinMode(2, OUTPUT);  //LED pin
-  pinMode(19, OUTPUT); //Enable Motors 
+  pinMode(19, OUTPUT); //Enable Motors
   digitalWrite(19,HIGH); //In this prototype we need this pin HIGH all the time
   pinMode(3, OUTPUT);  //PWM Backward LEFT Motor
   pinMode(9, OUTPUT);  //PWM Forward LEFT Motor
@@ -40,20 +41,38 @@ void LCR::LCR_Init()
   pinMode(A4, INPUT);  //IRArray 1
 
 }
+/************************************************************************************************
+*	Description:  These functions increase the number of pulses while the wheels are moving 	*
+*				  and update the flag that indicate the movement is ended						*
+*	Arguments:  None																		    *
+*	 																							*
+************************************************************************************************/
+void LCR::Encoder1LEFT()
+{
+  countLEFT+=1;
+  if (countLEFT >= stepL)
+	  finishMove = 0;
+}
 
+void LCR::Encoder1RIGHT()
+{
+  countRIGHT+=1;
+   if (countRIGHT >= stepR)
+	  finishMove = 0;
+}
 /************************************************************************************************
 *	Description:  This function moves forward and backward the robot							*
-*	Arguments:  																				*				
-*	 	- Dir:		 	0 = Forward																*	
-*					1 = Backward	
+*	Arguments:  																				*
+*	 	- Dir:		 	0 = Forward																*
+*					1 = Backward
 *					FORWARD/BACKWARD														*
 *		- Distance: 	Distance in mm we want to move the robot								*
-*		- Rate:			Number between 0 and 100 that indicate the % speed which the 			*	
+*		- Rate:			Number between 0 and 100 that indicate the % speed which the 			*
 *						robot is going to move. 												*
 *	By deffect the values are:	0 -> Forward													*
 *							  160 -> 16 cm.														*
 *							   25 -> 25% of the max. speed										*
-*	To select the values by deffect is no neccesary put any argument between brackets			*				   
+*	To select the values by deffect is no neccesary put any argument between brackets			*
 ************************************************************************************************/
 
 void LCR::LCR_Move ( bool dir, int distance, int rate )
@@ -68,12 +87,12 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
   {
     distance = 160;
     }
-  
+
   //Calculate the number of pulses that we need to move the spefied distance
   rate = map (rate, 100, 0, 0,230);
   stepR = PPV*distance/191.6;
   stepL = stepR;
-  
+
   //Move forward
   if (dir == 0)
   {
@@ -83,12 +102,12 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
     analogWrite (6, rate+3);
   }
   //Move backward
-  else 
+  else
   {
     digitalWrite(3, HIGH);
     analogWrite (9, rate);
     digitalWrite(6, HIGH);
-    analogWrite (5, rate+3); 
+    analogWrite (5, rate+3);
   }
   while(finishMove); //Wait until the movement is finished
   LCR_Stop();		 //Stop the robot
@@ -96,11 +115,11 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
 
 /***************************************************************************************************
 *	Description:  This function turns the robot right and left(using diferent ways(not ready yet)) *
-*	Arguments:  																				   *				
-*	 	- Dir: 			0 = Turn Right															   *	
+*	Arguments:  																				   *
+*	 	- Dir: 			0 = Turn Right															   *
 *						1 = Turn Left														   	   *
 *		- Distance: 	Degrees to turn								   							   *
-*		- Rate:			Number between 0 and 100 that indicate the % speed which the 			   *	
+*		- Rate:			Number between 0 and 100 that indicate the % speed which the 			   *
 *						robot is going to move. 												   *
 *		- Mode:			0 = Turn taking like origin the center between the motors				   *
 *						1 = Using a wheel like centre of the movement (not ready yet			   *
@@ -109,13 +128,13 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
 *							   90 -> 90 degrees													   *
 *							   25 -> 25% of the max. speed										   *
 *							    0 -> Turn taking like origin the center between the motors		   *
-*	To select the values by deffect is no neccesary put any argument between brackets			   * 				   
+*	To select the values by deffect is no neccesary put any argument between brackets			   *
 ***************************************************************************************************/
 
 void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
 {
   int dist;		//Distance that in mm that should move every wheel during th turn
-  
+
   //Select the values by deffect
   if (rate == 0)
   {
@@ -126,15 +145,15 @@ void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
   {
     deg = 90;
     }
-  
+
   //Calculate the speed to turn
   rate = map (rate, 100, 0, 0,230);
-  //Turn taking like origin the center between the motors	
+  //Turn taking like origin the center between the motors
   if (mode == 0)
   {
 	dist = (2*PI*70)/(360/deg);
 	stepR = PPV*dist/191.6;
-	stepL = stepR;  
+	stepL = stepR;
     if (dir == 0)
     {
       digitalWrite(9, HIGH);
@@ -142,38 +161,38 @@ void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
       digitalWrite(6, HIGH);
       analogWrite (5, rate+3);
     }
-    else 
+    else
     {
       digitalWrite(3, HIGH);
       analogWrite (9, rate);
       digitalWrite(5, HIGH);
-      analogWrite (6, rate+3); 
-    } 
+      analogWrite (6, rate+3);
+    }
   }
-   //Turn taking like origin one wheel	
-  /* else 
-  { 
+   //Turn taking like origin one wheel
+  /* else
+  {
     if (dir == 0)
     {
 	  dist = (2*PI*140)/(360/deg);
-	  stepL = PPV*dist/191.6; 
+	  stepL = PPV*dist/191.6;
       digitalWrite(9, HIGH);
       analogWrite (3, rate);
       digitalWrite(5, HIGH);
       digitalWrite(6, HIGH);
     }
-    else 
+    else
     {
 	  dist = (2*PI*140)/(360/deg);
-	  stepR = PPV*dist/191.6; 
+	  stepR = PPV*dist/191.6;
       digitalWrite(3, HIGH);
       digitalWrite(9, HIGH);
       digitalWrite(5, HIGH);
-      analogWrite (6, rate+3); 
+      analogWrite (6, rate+3);
 	  Serial.println(dist);
 	  Serial.println(stepR);
 	  Serial.println(finishMove);
-    } 
+    }
   } */
   while(finishMove);		//Wait until the turn finishes
   LCR_Stop();				//Stop the robot
@@ -182,8 +201,8 @@ void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
 /************************************************************************************************
 *	Description:  This function stops the robot and reset all the variables that use to	        *
 *				  make movements																*
-*	Arguments: None 																			*				
-*	 																							*				   
+*	Arguments: None 																			*
+*	 																							*
 ************************************************************************************************/
 void LCR::LCR_Stop ()
 {
@@ -191,7 +210,7 @@ void LCR::LCR_Stop ()
  digitalWrite(9, HIGH);
  digitalWrite(5, HIGH);
  digitalWrite(6, HIGH);
- 
+
  //Reset step counters
  countLEFT = 0;
  countRIGHT = 0;
@@ -200,8 +219,8 @@ void LCR::LCR_Stop ()
 
 /***************************************************************************************************
 *	Description:  This function turns the robot LED ON											   *
-*	Arguments:    None		 																	   * 
-*																								   *				   
+*	Arguments:    None		 																	   *
+*																								   *
 ***************************************************************************************************/
 void LCR::LCR_LedON()
 {
@@ -209,8 +228,8 @@ void LCR::LCR_LedON()
 }
 /************************************************************************************************
 *	Description:  This function turns the robot LED OFF						      				*
-*	Arguments: None 																			*				
-*	 																							*				   
+*	Arguments: None 																			*
+*	 																							*
 ************************************************************************************************/
 void LCR::LCR_LedOFF()
 {
@@ -219,22 +238,22 @@ void LCR::LCR_LedOFF()
 
 /***************************************************************************************************
 *	Description:  With this function you can make sounds with the robot							   *
-*	Arguments:  																				   *				
+*	Arguments:  																				   *
 *	 	- Note:	  Musical note that you want reproduce											   *
 *					 DO  	523 Hz															       *
 *					 DOS 	554 Hz															   	   *
 *					 RE		587 Hz															       *
 *					 RES	622 Hz															       *
-*					 MI		659 Hz															       *	
+*					 MI		659 Hz															       *
 *					 FA		698 Hz															       *
 *					 FAS	739 Hz															       *
 *					 SOL	783 Hz															       *
 *					 SOLS	830 Hz															       *
-*					 LA		880 Hz															       *	
-*					 LAS	932 Hz															       *		
-*					 SI		987 Hz					   										       * 
+*					 LA		880 Hz															       *
+*					 LAS	932 Hz															       *
+*					 SI		987 Hz					   										       *
 *		- Time: Miliseconds we want to reproduce the sound										   *
-*	This function works like "tone" Adruino's function											   *						 
+*	This function works like "tone" Adruino's function											   *
 ***************************************************************************************************/
 
 void LCR::LCR_Sound(unsigned int note, unsigned int time)
@@ -244,8 +263,8 @@ void LCR::LCR_Sound(unsigned int note, unsigned int time)
 
 /************************************************************************************************
 *	Description:  Stops the sound							      								*
-*	Arguments: None  																			*				
-*	 																							*				   
+*	Arguments: None  																			*
+*	 																							*
 ************************************************************************************************/
 void LCR::LCR_NoSound()
 {
@@ -255,53 +274,34 @@ void LCR::LCR_NoSound()
 /************************************************************************************************
 *	Description:  This function delays the robot							      				*
 *	Arguments:  																			    *
-*		- Seconds: Number of senconds we want delay												*				
-*	 																							*				   
+*		- Seconds: Number of senconds we want delay												*
+*	 																							*
 ************************************************************************************************/
 void LCR::LCR_Delay(float seconds)
 {
 	delay(seconds*1000);
 }
 
-/************************************************************************************************
-*	Description:  These functions increase the number of pulses while the wheels are moving 	*
-*				  and update the flag that indicate the movement is ended						*
-*	Arguments:  None																		    *										
-*	 																							*				   
-************************************************************************************************/
-void LCR::Encoder1LEFT(void)
-{
-  countLEFT+=1;
-  if (countLEFT >= stepL) 
-	  finishMove = 0;
-}
 
-void 
-Encoder1RIGHT(void)
-{ 
-  countRIGHT+=1;
-   if (countRIGHT >= stepR) 
-	  finishMove = 0;
-}
 
 /***************************************************************************************************
-*	Description:  This function can read from both light sensors, light up a LED (external and	   * 
+*	Description:  This function can read from both light sensors, light up a LED (external and	   *
 *				  connected at digital connector 1) acording with the light level read by the      *
 *				  sensor and send the read value to the serial port								   *
-*	Arguments:  																				   *				
-*	 	- Sensor: 		0 = Right Sensor														   *	
+*	Arguments:  																				   *
+*	 	- Sensor: 		0 = Right Sensor														   *
 *						1 = Left Semsor														   	   *
 *	Return:		  Return the value of the lignt measure											   *
 *
 *	By deffect read from right sensor
-*																								   * 				   
+*																								   *
 ***************************************************************************************************/
 
 int LCR::LCR_LightLED(bool sensor)
 {
 	int measure;
 	pinMode(13,OUTPUT);
-	
+
 	if (sensor == 0)
 	{
 	   measure = analogRead(A0);
@@ -310,7 +310,7 @@ int LCR::LCR_LightLED(bool sensor)
 	   Serial.println(measure);
 	   delay(250);
 	}
-	else 
+	else
 	{
 	   measure = analogRead(A1);
 	   analogWrite(13,map(measure, 0, 1023, 0, 255));
@@ -325,21 +325,21 @@ int LCR::LCR_LightLED(bool sensor)
 *	Description:  This function can read from both light sensors, turn ON-OFF the LED in function  *
 *				  to the read value and one trigger value selected by the usser and send the read  *
 *				  value to the serial port														   *
-*	Arguments:  																				   *				
-*	 	- Sensor: 		0 = Right Sensor														   *	
-*						1 = Left Sensor															   *	
+*	Arguments:  																				   *
+*	 	- Sensor: 		0 = Right Sensor														   *
+*						1 = Left Sensor															   *
 *		- Trigger:		Value betwen 0-1024 selected by the user that is the limit betwen ON-OFF   *
-*						LED status																   *	
+*						LED status																   *
 *	Return:		  Return the value of the lignt measure											   *
 *																								   *
 *	By deffect read from the Right Sensor and set the trigger at 512							   *
-*																								   * 				   
+*																								   *
 ***************************************************************************************************/
 
 int LCR::LCR_LightTrigger(bool sensor, int trig)
 {
 	int measure;
-	
+
 	if (sensor == 0)
 	{
 	   measure = analogRead(A0);
@@ -355,7 +355,7 @@ int LCR::LCR_LightTrigger(bool sensor, int trig)
 	   Serial.println(measure);
 	   delay(250);
 	}
-	else 
+	else
 	{
 	   measure = analogRead(A1);
 	   if (trig > measure)
@@ -375,12 +375,12 @@ int LCR::LCR_LightTrigger(bool sensor, int trig)
 
 /***************************************************************************************************
 *	Description:  This function can read from both light sensors								   *
-*	Arguments:  																				   *				
-*	 	- Sensor: 		0 = Right Sensor														   *	
-*						1 = Left Sensor															   *	
-																								   *	
+*	Arguments:  																				   *
+*	 	- Sensor: 		0 = Right Sensor														   *
+*						1 = Left Sensor															   *
+																								   *
 *	Return:		  Return the value of the lignt measure											   *
-*																								   * 				   
+*																								   *
 ***************************************************************************************************/
 
 int LCR::LCR_LightSensor(bool sensor)
@@ -392,14 +392,14 @@ int LCR::LCR_LightSensor(bool sensor)
 
 /***************************************************************************************************
 *	Description:  This function can read from both bumpers or any digital sensor				   *
-*	Arguments:  																				   *				
-*	 	- Sensor: 		0 = Right Bumper														   *	
-*						1 = Left Bumper															   *	
-																								   *	
+*	Arguments:  																				   *
+*	 	- Sensor: 		0 = Right Bumper														   *
+*						1 = Left Bumper															   *
+																								   *
 *	Return:		  Return the value of the lignt measure											   *
 *																								   *
 *	By deffect read from the Right Bumper							  							   *
-*																								   * 				   
+*																								   *
 ***************************************************************************************************/
 
 int LCR::LCR_Bumper(bool sensor)
@@ -409,7 +409,7 @@ int LCR::LCR_Bumper(bool sensor)
 	{
 	  measure = digitalRead(13);
 	}
-	else 
+	else
 	{
 		measure = digitalRead(4);
 	}
@@ -419,14 +419,14 @@ int LCR::LCR_Bumper(bool sensor)
 /***************************************************************************************************
 *	Description:  This function can read from both bumpers and light up the LED acording with the  *
 *				  status of the bumper															   *
-*	Arguments:  																				   *				
-*	 	- Sensor: 		0 = Right Bumper														   *	
-*						1 = Left Bumper															   *	
-*																								   *	
+*	Arguments:  																				   *
+*	 	- Sensor: 		0 = Right Bumper														   *
+*						1 = Left Bumper															   *
+*																								   *
 *	Return:		  Return the value of the lignt measure											   *
 *																								   *
 *	By deffect read from the Right Bumper														   *
-*																								   * 				   
+*																								   *
 ***************************************************************************************************/
 
 int LCR::LCR_BumperLED(bool sensor)
@@ -437,7 +437,7 @@ int LCR::LCR_BumperLED(bool sensor)
 	  measure = digitalRead(13);
 	  digitalWrite(2, measure);
 	}
-	else 
+	else
 	{
 	  measure = digitalRead(4);
 	  digitalWrite(2, measure);
@@ -448,28 +448,28 @@ int LCR::LCR_BumperLED(bool sensor)
 /***************************************************************************************************
 *	Description:  This function read the value of the IRArray sensors and send it to the seriial   *
 *				  port																			   *
-*	Arguments:  None																			   *				
-*																								   * 				   
+*	Arguments:  None																			   *
+*																								   *
 ***************************************************************************************************/
 void LCR::LCR_TestIRArray()
 {
-  Serial.println("Sensor Izda   |   Sensor Centro   |   Sensor Dcha   |"); 
-  Serial.println("----------------------------------------------------|");  
-    Serial.print("     ");  
+  Serial.println("Sensor Izda   |   Sensor Centro   |   Sensor Dcha   |");
+  Serial.println("----------------------------------------------------|");
+    Serial.print("     ");
     Serial.print(analogRead(A4));
     Serial.print("      |        ");
     Serial.print(analogRead(A3));
     Serial.print("        |         ");
   Serial.print(analogRead(A2));
   Serial.println("     |");
-  Serial.println("----------------------------------------------------|"); 
+  Serial.println("----------------------------------------------------|");
 }
 
 /***************************************************************************************************
 *	Description:  This function return 1 when any of the 3 IR sensors read bigger values than      *
 *				  threshold, if read lower, return 0											   *
-*	Arguments:  None																			   *				
-*																								   * 				   
+*	Arguments:  None																			   *
+*																								   *
 ***************************************************************************************************/
 bool LCR::LCR_IRArrayDetect(int threshold)
 {
@@ -480,18 +480,18 @@ bool LCR::LCR_IRArrayDetect(int threshold)
 	measure = analogRead(A3);
 	s2 = measure > threshold ? 1 : 0;
 	measure = analogRead(A2);
-	s3 = measure > threshold ? 1 : 0; 
+	s3 = measure > threshold ? 1 : 0;
 
 	return s1|s2|s3;
 }
 /***************************************************************************************************
 *	Description: This funcction moves separately the Left motor								       *
-*	Arguments:  																				   *	
+*	Arguments:  																				   *
 *		- Dir: Set the movement direction of the motor											   *
 *				!=1 && != 2  -->  Motor Stop												       *
-*				1 		     -->  Motor Forward													   * 				
+*				1 		     -->  Motor Forward													   *
 *				2            -->  Motor Backward												   *
-*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *	
+*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *
 *				robot is going to move.															   *
 *				 				   																   *
 ***************************************************************************************************/
@@ -499,7 +499,7 @@ void LCR::LCR_MotorL(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
-	
+
 	if (dir == 1)
 	{
 	 digitalWrite(9, HIGH);
@@ -510,7 +510,7 @@ void LCR::LCR_MotorL(int dir, int rate)
 	 digitalWrite(3, HIGH);
      analogWrite (9, rate);
 	}
-	else 
+	else
 	{
 	 digitalWrite(9, HIGH);
      digitalWrite(3, HIGH);
@@ -519,12 +519,12 @@ void LCR::LCR_MotorL(int dir, int rate)
 
 /***************************************************************************************************
 *	Description: This funcction moves separately the Right motor							       *
-*	Arguments:  																				   *	
+*	Arguments:  																				   *
 *		- Dir: Set the movement direction of the motor											   *
 *				!=1 && != 2  -->  Motor Stop												       *
-*				1 		     -->  Motor Forward													   * 				
+*				1 		     -->  Motor Forward													   *
 *				2            -->  Motor Backward												   *
-*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *	
+*		- Rate: Number between 0 and 100 that indicate the % speed which the 			  		   *
 *				robot is going to move.															   *
 *				 				   																   *				 				   																   *
 ***************************************************************************************************/
@@ -532,7 +532,7 @@ void LCR::LCR_MotorR(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
-	
+
 	if (dir == 1)
 	{
 	 digitalWrite(5, HIGH);
@@ -543,7 +543,7 @@ void LCR::LCR_MotorR(int dir, int rate)
 	 digitalWrite(6, HIGH);
      analogWrite (5, rate);
 	}
-	else 
+	else
 	{
 	 digitalWrite(5, HIGH);
      digitalWrite(6, HIGH);
@@ -552,15 +552,15 @@ void LCR::LCR_MotorR(int dir, int rate)
 
 /***************************************************************************************************
 *	Description:      *
-*	Arguments:  None																			   *				
-*																								   * 				   
+*	Arguments:  None																			   *
+*																								   *
 ***************************************************************************************************/
 void LCR::LCR_LineFollower(int threshold, int rate)
 {
   int measure;
   if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
-	
+
   measure = analogRead(A4);
   if (measure > threshold)
   {
@@ -580,4 +580,3 @@ void LCR::LCR_LineFollower(int threshold, int rate)
 	 LCR_MotorR(0);
   }
 }
-
