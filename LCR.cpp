@@ -63,8 +63,8 @@ void LCR::Encoder1RIGHT()
 /************************************************************************************************
 *	Description:  This function moves forward and backward the robot							*
 *	Arguments:  																				*
-*	 	- Dir:		 	0 = Forward																*
-*					1 = Backward
+*	 	- Dir:		 	FORWARDS = Forwards													*
+*					BACKWARDS = Backwards
 *					FORWARD/BACKWARD														*
 *		- Distance: 	Distance in mm we want to move the robot								*
 *		- Rate:			Number between 0 and 100 that indicate the % speed which the 			*
@@ -75,7 +75,7 @@ void LCR::Encoder1RIGHT()
 *	To select the values by deffect is no neccesary put any argument between brackets			*
 ************************************************************************************************/
 
-void LCR::LCR_Move ( bool dir, int distance, int rate )
+void LCR::LCR_Move ( char* dir, int distance, int rate )
 {
   //Select the values by deffect
   if (rate == 0)
@@ -94,7 +94,7 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
   stepL = stepR;
 
   //Move forward
-  if (dir == 0)
+  if (dir == "FORWARDS")
   {
     digitalWrite(9, HIGH);
     analogWrite (3, rate);
@@ -131,7 +131,7 @@ void LCR::LCR_Move ( bool dir, int distance, int rate )
 *	To select the values by deffect is no neccesary put any argument between brackets			   *
 ***************************************************************************************************/
 
-void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
+void LCR::LCR_Turn (char* dir, int deg, int rate, bool mode )
 {
   int dist;		//Distance that in mm that should move every wheel during th turn
 
@@ -154,7 +154,7 @@ void LCR::LCR_Turn ( bool dir, int deg, int rate, bool mode )
 	dist = (2*PI*70)/(360/deg);
 	stepR = PPV*dist/191.6;
 	stepL = stepR;
-    if (dir == 0)
+    if (dir == "RIGHT")
     {
       digitalWrite(9, HIGH);
       analogWrite (3, rate);

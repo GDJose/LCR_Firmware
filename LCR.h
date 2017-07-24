@@ -35,8 +35,8 @@ class LCR{
 		void LCR_Init();
 		static void Encoder1LEFT();
 		static void Encoder1RIGHT();
-		void LCR_Move(bool dir = 0, int distance = 0, int rate = 0);
-		void LCR_Turn(bool dir = 0, int deg = 0, int rate = 0, bool mode = 0);
+		void LCR_Move(char* dir="FORWARDS", int distance = 0, int rate = 0);
+		void LCR_Turn(char* dir = "RIGHT", int deg = 0, int rate = 0, bool mode = 0);
 		void LCR_Stop ();
 		void LCR_Sound(unsigned int note, unsigned int time = 0);
 		void LCR_NoSound();
