@@ -9,16 +9,16 @@
 // Musical Notes
 #define DO  	523
 #define DOS 	554
-#define RE		587
-#define RES		622
-#define MI		659
-#define FA		698
-#define FAS		739
-#define SOL		783
+#define RE	587
+#define RES	622
+#define MI	659
+#define FA	698
+#define FAS	739
+#define SOL	783
 #define SOLS	830
-#define LA		880
-#define LAS		932
-#define SI		987
+#define LA	880
+#define LAS	932
+#define SI	987
 
 //Varables to count the pulses from the encoders
 extern int countRIGHT;
@@ -35,8 +35,11 @@ class LCR{
 		void LCR_Init();
 		static void Encoder1LEFT();
 		static void Encoder1RIGHT();
-		void LCR_Move(char* dir="FORWARDS", int distance = 0, int rate = 0);
-		void LCR_Turn(char* dir = "RIGHT", int deg = 0, int rate = 0, bool mode = 0);
+		int SetRate(int rate);
+		int SetDistance(int dist);
+		int SetDegrees(int deg);
+		void LCR_Move(char* dir="FORWARDS", int SetDistance(0), int SetRate(0));
+		void LCR_Turn(char* dir = "RIGHT", int SetDeg(10), int SetRate(0), bool mode = 0);
 		void LCR_Stop ();
 		void LCR_Sound(unsigned int note, unsigned int time = 0);
 		void LCR_NoSound();
@@ -50,9 +53,9 @@ class LCR{
 		int LCR_Bumper(bool sensor = 0);
 		int LCR_BumperLED(bool sensor = 0);
 		void LCR_TestIRArray();
-		void LCR_MotorL(int dir, int rate = 0);
-		void LCR_MotorR(int dir, int rate = 0);
-		void LCR_LineFollower(int threshold, int rate = 0);
+		void LCR_MotorL(int dir, int SetRate(0));
+		void LCR_MotorR(int dir, int SetRate(0));
+		void LCR_LineFollower(int threshold, int SetRate(0));
 		bool LCR_IRArrayDetect(int treshold);
 };
 
