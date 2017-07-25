@@ -65,7 +65,7 @@ void LCR::Encoder1RIGHT()
 *	Description:  This function set the value of the speed which the motor will be moved	*
 *	Arguments: 									        *
 *		- Rate:	Number between 0 and 100 that indicate the % speed which the 		*
-*			robot is going to move.							*		
+*			robot is going to move.							*
 *												*
 ************************************************************************************************/
 int LCR::SetRate(int rate)
@@ -85,7 +85,7 @@ int LCR::SetRate(int rate)
 *	Description:  This function set the value of the distance that the robot will be moved	*
 *	Arguments: 									        *
 *		- dist:	Number between 0 and 10000 that indicate the % speed which the 		*
-*			robot is going to move.							*		
+*			robot is going to move.							*
 *												*
 ************************************************************************************************/
 int LCR::SetDistance(int dist)
@@ -105,7 +105,7 @@ int LCR::SetDistance(int dist)
 *	Description:  This function set the value of the degrees that the robot will be turned	*
 *	Arguments: 									        *
 *		- Rate:	Number between 0 and 100 that indicate the % speed which the 		*
-*			robot is going to move.							*		
+*			robot is going to move.							*
 *												*
 ************************************************************************************************/
 int LCR::SetDegrees(int deg)
@@ -118,7 +118,7 @@ int LCR::SetDegrees(int deg)
     {
 	deg = 10;
     }
-  return rate;
+  return deg;
 }
 
 /************************************************************************************************
@@ -136,7 +136,7 @@ int LCR::SetDegrees(int deg)
 *	To select the values by deffect is no neccesary put any argument between brackets	*
 ************************************************************************************************/
 
-void LCR::LCR_Move ( char* dir, int distance, int rate )
+void LCR::LCR_Move (String dir, int distance, int rate )
 {
   //Select the values by deffect
   if (rate == 0)
@@ -192,7 +192,7 @@ void LCR::LCR_Move ( char* dir, int distance, int rate )
 *	To select the values by deffect is no neccesary put any argument between brackets		*
 ********************************************************************************************************/
 
-void LCR::LCR_Turn (char* dir, int deg, int rate, bool mode )
+void LCR::LCR_Turn (String dir, int deg, int rate, bool mode )
 {
   int dist;		//Distance that in mm that should move every wheel during th turn
 
@@ -555,17 +555,17 @@ bool LCR::LCR_IRArrayDetect(int threshold)
 *			robot is going to move.							   *
 *				 				  				   *
 ***************************************************************************************************/
-void LCR::LCR_MotorL(int dir, int rate)
+void LCR::LCR_MotorL(String dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
 
-	if (dir == 1)
+	if (dir == "FORWARDS")
 	{
 	 digitalWrite(9, HIGH);
      analogWrite (3, rate);
 	}
-	else if (dir == 2)
+	else if (dir == "BACKWARDS")
 	{
 	 digitalWrite(3, HIGH);
      analogWrite (9, rate);
@@ -587,17 +587,17 @@ void LCR::LCR_MotorL(int dir, int rate)
 *		- Rate: Number between 0 and 100 that indicate the % speed which the  		   *
 *			robot is going to move.							   *
 *				 				   				   *		***************************************************************************************************/
-void LCR::LCR_MotorR(int dir, int rate)
+void LCR::LCR_MotorR(String dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
 
-	if (dir == 1)
+	if (dir == "FORWARDS")
 	{
 	 digitalWrite(5, HIGH);
      analogWrite (6, rate+3);
 	}
-	else if (dir == 2)
+	else if (dir == "BACKWARDS")
 	{
 	 digitalWrite(6, HIGH);
      analogWrite (5, rate);
