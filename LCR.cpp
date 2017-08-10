@@ -623,19 +623,19 @@ void LCR::LCR_LineFollower(int threshold, int rate)
   measure = analogRead(A4);
   if (measure > threshold)
   {
-	  LCR_MotorL(1);
+	  LCR_MotorL("FORWARDS");
   }
   else
   {
-	  LCR_MotorL(0);
+	  LCR_MotorL("BACKWARDS");
   }
   measure = analogRead(A2);
   if (measure > threshold)
   {
-	  LCR_MotorR(1);
+	  LCR_MotorR("FORWARDS");
   }
   else
   {
-	 LCR_MotorR(0);
+	 LCR_MotorR("BACKWARDS");
   }
 }
