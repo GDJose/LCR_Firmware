@@ -7,18 +7,24 @@
 #define PPV 2048		//Number of the encoder pulses in one turn of the wheel
 
 // Musical Notes
-#define DO  	523
-#define DOS 	554
-#define RE	587
-#define RES	622
-#define MI	659
-#define FA	698
-#define FAS	739
-#define SOL	783
-#define SOLS	830
-#define LA	880
-#define LAS	932
-#define SI	987
+#define C  	523
+#define CS 	554
+#define D		587
+#define DS		622
+#define E		659
+#define F		698
+#define FS		739
+#define G		783
+#define GS	830
+#define A		880
+#define AS		932
+#define B		987
+
+//Movement direcction
+#define FORWARDS 1
+#define BACKWARDS 0
+#define RIGHT	 1
+#define LEFT	 0
 
 //Varables to count the pulses from the encoders
 extern int countRIGHT;
@@ -38,23 +44,24 @@ class LCR{
 		int SetRate(int rate);
 		int SetDistance(int dist);
 		int SetDegrees(int deg);
-		void LCR_Move(String dir="FORWARDS", int distance=0, int rate=0);
-		void LCR_Turn(String dir = "RIGHT", int deg=0, int rate=0, bool mode = 0);
-		void LCR_Stop ();
+		void LCR_Move(int dir= FORWARDS, int distance=0, int rate=0);
+		void LCR_Turn(int dir = RIGHT, int deg=0, int rate=0);
+		void LCR_Stop();
 		void LCR_Sound(unsigned int note, unsigned int time = 0);
 		void LCR_NoSound();
 		void LCR_Delay(float seconds);
 		void LCR_LedON();
 		void LCR_LedOFF();
-
+		void LCR_End();
+		
 		int LCR_LightLED(bool sensor = 0);
 		int LCR_LightTrigger(bool sensor = 0, int trig = 512);
 		int LCR_LightSensor(bool sensor = 0);
 		int LCR_Bumper(bool sensor = 0);
 		int LCR_BumperLED(bool sensor = 0);
 		void LCR_TestIRArray();
-		void LCR_MotorL(String dir, int rate = 0);
-		void LCR_MotorR(String dir, int rate = 0);
+		void LCR_MotorL(int dir, int rate = 0);
+		void LCR_MotorR(int dir, int rate = 0);
 		void LCR_LineFollower(int threshold, int rate = 0);
 		bool LCR_IRArrayDetect(int treshold);
 };

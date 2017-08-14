@@ -1,0 +1,45 @@
+#######################################
+# Syntax Coloring Map Low Cost Robot
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LCR	KEYWORD1
+
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+LCR_Init			KEYWORD2
+LCR_Move			KEYWORD2
+LCR_Turn			KEYWORD2
+LCR_Stop			KEYWORD2
+LCR_Sound			KEYWORD2
+LCR_NoSound			KEYWORD2
+LCR_Delay			KEYWORD2
+LCR_LedON			KEYWORD2
+LCR_LedOFF			KEYWORD2
+LCR_End				KEYWORD2
+LCR_LightLED		KEYWORD2	
+LCR_LightTrigger	KEYWORD2
+LCR_LightSensor		KEYWORD2
+LCR_Bumper			KEYWORD2
+LCR_BumperLED		KEYWORD2
+LCR_TestIRArray		KEYWORD2
+LCR_MotorL			KEYWORD2
+LCR_MotorR			KEYWORD2
+LCR_LineFollower	KEYWORD2	
+LCR_IRArrayDetect	KEYWORD2	
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+FORWARDS			LITERAL1
+BACKWARDS			LITERAL1
+RIGHT				LITERAL1
+LEFT				LITERAL1

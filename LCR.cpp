@@ -27,10 +27,10 @@ void LCR::LCR_Init()
   pinMode(9, OUTPUT);  //PWM Forward LEFT Motor
   pinMode(5, OUTPUT);  //PWM Backward RIGHT Motor
   pinMode(6, OUTPUT);  //PWM Forward RIGHT Motor
-  attachInterrupt(digitalPinToInterrupt(7),Encoder1LEFT, RISING);  // Encoder A Motor LEFT
- // attachInterrupt(digitalPinToInterrupt(10),Encoder1RIGHTT, RISING); //Encoder B motor LEFT
-  attachInterrupt(digitalPinToInterrupt(11),Encoder1RIGHT, RISING); //Encoder A motor RIGHT
- // attachInterrupt(digitalPinToInterrupt(12),Encoder1RIGHT, RISING); //Encoder B motor RIGHT
+  attachInterrupt(digitalPinToInterrupt(11),Encoder1LEFT, RISING);  // Encoder A Motor LEFT
+ // attachInterrupt(digitalPinToInterrupt(12),Encoder1RIGHTT, RISING); //Encoder B motor LEFT
+  attachInterrupt(digitalPinToInterrupt(7),Encoder1RIGHT, RISING); //Encoder A motor RIGHT
+ // attachInterrupt(digitalPinToInterrupt(10),Encoder1RIGHT, RISING); //Encoder B motor RIGHT
   pinMode(13,INPUT);  //Modulino Connector 2
   pinMode(4,INPUT);   //Modulino Connector 1
   pinMode(8, OUTPUT);  //Piezzo
@@ -120,6 +120,16 @@ int LCR::SetDegrees(int deg)
     }
   return deg;
 }
+/************************************************************************************************
+*	Description:  		*
+*	Arguments:										*
+*	 	None				*
+*
+************************************************************************************************/
+void LCR::LCR_End()
+{
+	while(1);
+}
 
 /************************************************************************************************
 *	Description:  This function moves forward and backward the robot			*
@@ -136,7 +146,7 @@ int LCR::SetDegrees(int deg)
 *	To select the values by deffect is no neccesary put any argument between brackets	*
 ************************************************************************************************/
 
-void LCR::LCR_Move (String dir, int distance, int rate )
+void LCR::LCR_Move (int dir, int distance, int rate )
 {
   //Select the values by deffect
   if (rate == 0)
@@ -151,16 +161,16 @@ void LCR::LCR_Move (String dir, int distance, int rate )
 
   //Calculate the number of pulses that we need to move the spefied distance
   rate = map (rate, 100, 0, 0,230);
-  stepR = PPV*distance/191.6;
+  stepR = PPV*distance/191.6-40;
   stepL = stepR;
 
   //Move forward
-  if (dir == "FORWARDS")
+  if (dir == FORWARDS)
   {
     digitalWrite(9, HIGH);
     analogWrite (3, rate);
     digitalWrite(5, HIGH);
-    analogWrite (6, rate+3);
+    analogWrite (6, rate);
   }
   //Move backward
   else
@@ -168,14 +178,15 @@ void LCR::LCR_Move (String dir, int distance, int rate )
     digitalWrite(3, HIGH);
     analogWrite (9, rate);
     digitalWrite(6, HIGH);
-    analogWrite (5, rate+3);
+    analogWrite (5, rate);
   }
   while(finishMove); //Wait until the movement is finished
   LCR_Stop();		 //Stop the robot
 }
 
 /********************************************************************************************************
-*	Description:  This function turns the robot right and left(using diferent ways(not ready yet)) 	*
+*	Description:  This function turns the robot right and left takin as origint the center betwen the *
+*				  wheels																				*
 *	Arguments: 		       								       	*
 *	 	- Dir: 			0 = Turn Right 						       	*
 *					1 = Turn Left 					   	       	*
@@ -192,7 +203,7 @@ void LCR::LCR_Move (String dir, int distance, int rate )
 *	To select the values by deffect is no neccesary put any argument between brackets		*
 ********************************************************************************************************/
 
-void LCR::LCR_Turn (String dir, int deg, int rate, bool mode )
+void LCR::LCR_Turn (int dir, int deg, int rate)
 {
   int dist;		//Distance that in mm that should move every wheel during th turn
 
@@ -210,13 +221,12 @@ void LCR::LCR_Turn (String dir, int deg, int rate, bool mode )
   //Calculate the speed to turn
   rate = map (rate, 100, 0, 0,230);
   //Turn taking like origin the center between the motors
-  if (mode == 0)
-  {
-	dist = (2*PI*70)/(360/deg);
-	stepR = PPV*dist/191.6;
-	stepL = stepR;
-    if (dir == "RIGHT")
+  
+    if (dir == RIGHT)
     {
+      dist = (2*PI*74)/(360/deg);
+	  stepR = PPV*dist/191.6-55;
+	  stepL = 2*stepR;
       digitalWrite(9, HIGH);
       analogWrite (3, rate);
       digitalWrite(6, HIGH);
@@ -224,37 +234,14 @@ void LCR::LCR_Turn (String dir, int deg, int rate, bool mode )
     }
     else
     {
+	  dist = (2*PI*74)/(360/deg);
+	  stepL = PPV*dist/191.6-55;
+	  stepR = 2*stepL;
       digitalWrite(3, HIGH);
       analogWrite (9, rate);
       digitalWrite(5, HIGH);
       analogWrite (6, rate+3);
-    }
-  }
-   //Turn taking like origin one wheel
-  /* else
-  {
-    if (dir == 0)
-    {
-	  dist = (2*PI*140)/(360/deg);
-	  stepL = PPV*dist/191.6;
-      digitalWrite(9, HIGH);
-      analogWrite (3, rate);
-      digitalWrite(5, HIGH);
-      digitalWrite(6, HIGH);
-    }
-    else
-    {
-	  dist = (2*PI*140)/(360/deg);
-	  stepR = PPV*dist/191.6;
-      digitalWrite(3, HIGH);
-      digitalWrite(9, HIGH);
-      digitalWrite(5, HIGH);
-      analogWrite (6, rate+3);
-	  Serial.println(dist);
-	  Serial.println(stepR);
-	  Serial.println(finishMove);
-    }
-  } */
+    }  
   while(finishMove);		//Wait until the turn finishes
   LCR_Stop();				//Stop the robot
 }
@@ -555,17 +542,17 @@ bool LCR::LCR_IRArrayDetect(int threshold)
 *			robot is going to move.							   *
 *				 				  				   *
 ***************************************************************************************************/
-void LCR::LCR_MotorL(String dir, int rate)
+void LCR::LCR_MotorL(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
 
-	if (dir == "FORWARDS")
+	if (dir == FORWARDS)
 	{
 	 digitalWrite(9, HIGH);
      analogWrite (3, rate);
 	}
-	else if (dir == "BACKWARDS")
+	else if (dir == BACKWARDS)
 	{
 	 digitalWrite(3, HIGH);
      analogWrite (9, rate);
@@ -587,17 +574,17 @@ void LCR::LCR_MotorL(String dir, int rate)
 *		- Rate: Number between 0 and 100 that indicate the % speed which the  		   *
 *			robot is going to move.							   *
 *				 				   				   *		***************************************************************************************************/
-void LCR::LCR_MotorR(String dir, int rate)
+void LCR::LCR_MotorR(int dir, int rate)
 {
 	if (rate == 0) rate = 25;
 	rate = map (rate, 100, 0, 0,230);
 
-	if (dir == "FORWARDS")
+	if (dir == FORWARDS)
 	{
 	 digitalWrite(5, HIGH);
      analogWrite (6, rate+3);
 	}
-	else if (dir == "BACKWARDS")
+	else if (dir == BACKWARDS)
 	{
 	 digitalWrite(6, HIGH);
      analogWrite (5, rate);
@@ -623,19 +610,19 @@ void LCR::LCR_LineFollower(int threshold, int rate)
   measure = analogRead(A4);
   if (measure > threshold)
   {
-	  LCR_MotorL("FORWARDS");
+	  LCR_MotorL(FORWARDS);
   }
   else
   {
-	  LCR_MotorL("BACKWARDS");
+	  LCR_MotorL(BACKWARDS);
   }
   measure = analogRead(A2);
   if (measure > threshold)
   {
-	  LCR_MotorR("FORWARDS");
+	  LCR_MotorR(FORWARDS);
   }
   else
   {
-	 LCR_MotorR("BACKWARDS");
+	 LCR_MotorR(BACKWARDS);
   }
 }
