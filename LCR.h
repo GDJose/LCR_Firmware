@@ -63,7 +63,7 @@ class LCR{
 		void LCR_MotorL(int dir, int rate = 0);
 		void LCR_MotorR(int dir, int rate = 0);
 		void LCR_LineFollower(int threshold, int rate = 0);
-		bool LCR_IRArrayDetect(int treshold);
+		bool LCR_IRArrayDetect(int sensor, int threshold);
 };
 
 #endif
