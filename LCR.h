@@ -8,17 +8,17 @@
 
 // Musical Notes
 #define C  	523
-#define C# 	554
-#define D		587
-#define D#		622
-#define E		659
-#define F		698
-#define F#		739
-#define G		783
-#define G#	830
-#define A		880
-#define A#		932
-#define B		987
+#define CS	554
+#define D	587
+#define DS	622
+#define E	659
+#define F	698
+#define FS	739
+#define G	783
+#define GS	830
+#define A	880
+#define AS	932
+#define B	987
 
 //Movement direcction
 #define FORWARDS 1
