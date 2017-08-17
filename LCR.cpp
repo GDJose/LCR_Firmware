@@ -513,12 +513,12 @@ void LCR::LCR_TestIRArray()
 }
 
 /***************************************************************************************************
-*	Description:  This function return 1 when any of the 3 IR sensors read bigger values than  *
+*	Description:  This function return 1 when the selected IR sensor (1, 2 or 3) read bigger values than  *
 *		      threshold, if read lower, return 0					   *
 *	Arguments:  None									   *
 *												   *
 ***************************************************************************************************/
-bool LCR::LCR_IRArrayDetect(int threshold)
+bool LCR::LCR_IRArrayDetect(int sensor, int threshold)
 {
 	int measure;
 	int s1, s2, s3;
@@ -529,7 +529,16 @@ bool LCR::LCR_IRArrayDetect(int threshold)
 	measure = analogRead(A2);
 	s3 = measure > threshold ? 1 : 0;
 
-	return s1|s2|s3;
+	if (sensor == 1)
+	{
+	 return s1;
+	}
+	else if ( sensor == 2)
+	{
+	 return s2;
+	}
+	else 
+	 return s3;
 }
 /***************************************************************************************************
 *	Description: This funcction moves separately the Left motor   			           *
