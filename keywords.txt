@@ -33,7 +33,8 @@ LCR_TestIRArray		KEYWORD2
 LCR_MotorL			KEYWORD2
 LCR_MotorR			KEYWORD2
 LCR_LineFollower	KEYWORD2	
-LCR_IRArrayDetect	KEYWORD2	
+LCR_IRArrayDetect	KEYWORD2
+LCR_LedColor	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -23,8 +23,13 @@
 //Movement direcction
 #define FORWARDS 1
 #define BACKWARDS 0
+#define STOP 2
 #define RIGHT	 1
 #define LEFT	 0
+
+//Defines for the NEO^PIXEL LEDs
+#define PIN            2
+#define NUMPIXELS      1
 
 //Varables to count the pulses from the encoders
 extern int countRIGHT;
@@ -33,6 +38,8 @@ extern int countLEFT;
 //make any movement
 extern int stepR;
 extern int stepL;
+
+
 
 class LCR{
 	public:
@@ -50,8 +57,7 @@ class LCR{
 		void LCR_Sound(unsigned int note, unsigned int time = 0);
 		void LCR_NoSound();
 		void LCR_Delay(float seconds);
-		void LCR_LedON();
-		void LCR_LedOFF();
+		void LCR_LedColor(uint8_t r, uint8_t g, uint8_t b);
 		void LCR_End();
 		
 		int LCR_LightLED(bool sensor = 0);
@@ -63,7 +69,7 @@ class LCR{
 		void LCR_MotorL(int dir, int rate = 0);
 		void LCR_MotorR(int dir, int rate = 0);
 		void LCR_LineFollower(int threshold, int rate = 0);
-		bool LCR_IRArrayDetect(int sensor, int threshold);
+		bool LCR_IRArrayDetect(int threshold, int sensor = 0);
 };
 
 #endif

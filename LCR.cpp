@@ -1,7 +1,7 @@
 
 #include <Arduino.h>
 #include <LCR.h>
-
+#include <Adafruit_NeoPixel.h>
 
 //Variables
 int countRIGHT =0;
@@ -10,6 +10,9 @@ int stepR = 0;
 int stepL = 0;
 
 volatile int finishMove = 1;	//Variable to indicate the movement has been finished
+
+Adafruit_NeoPixel pixels;
+
 
 /************************************************************************************************
 *	Description:  This function initialize the standard configuration for the LCR		*
@@ -39,7 +42,9 @@ void LCR::LCR_Init()
   pinMode(A2, INPUT);  //IRArray 3
   pinMode(A3, INPUT);  //IRArray 2
   pinMode(A4, INPUT);  //IRArray 1
-
+  
+  pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
+  pixels.begin(); // This initializes the NeoPixel library.
 }
 /************************************************************************************************
 *	Description:  These functions increase the number of pulses while the wheels are moving *
@@ -270,18 +275,10 @@ void LCR::LCR_Stop ()
 *	Arguments:    None									   *
 *												   *
 ***************************************************************************************************/
-void LCR::LCR_LedON()
+void LCR::LCR_LedColor(uint8_t r, uint8_t g, uint8_t b)
 {
-	digitalWrite(2, HIGH);
-}
-/************************************************************************************************
-*	Description:  This function turns the robot LED OFF       				*
-*	Arguments: None										*
-*												*
-************************************************************************************************/
-void LCR::LCR_LedOFF()
-{
-	digitalWrite(2, LOW);
+	pixels.setPixelColor(0, pixels.Color(r,g,b)); // Set the selected color for the LEDs
+    pixels.show();
 }
 
 /***************************************************************************************************
@@ -529,6 +526,10 @@ bool LCR::LCR_IRArrayDetect(int sensor, int threshold)
 	measure = analogRead(A2);
 	s3 = measure > threshold ? 1 : 0;
 
+	if (sensor == 0)
+	{
+	  return s1|s2|s3;		
+	}
 	if (sensor == 1)
 	{
 	 return s1;
