@@ -58,6 +58,7 @@ class LCR{
 		void LCR_NoSound();
 		void LCR_Delay(float seconds);
 		void LCR_LedColor(uint8_t r, uint8_t g, uint8_t b);
+		void LCR_LedOFF();
 		void LCR_End();
 		
 		int LCR_LightLED(bool sensor = 0);

@@ -45,6 +45,7 @@ void LCR::LCR_Init()
   
   pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
   pixels.begin(); // This initializes the NeoPixel library.
+  LCR_LedOFF();
 }
 /************************************************************************************************
 *	Description:  These functions increase the number of pulses while the wheels are moving *
@@ -278,6 +279,16 @@ void LCR::LCR_Stop ()
 void LCR::LCR_LedColor(uint8_t r, uint8_t g, uint8_t b)
 {
 	pixels.setPixelColor(0, pixels.Color(r,g,b)); // Set the selected color for the LEDs
+    pixels.show();
+}
+/***************************************************************************************************
+*	Description:  This function turns the robot LED OFF					   *
+*	Arguments:    None									   *
+*												   *
+***************************************************************************************************/
+void LCR::LCR_LedOFF()
+{
+	pixels.setPixelColor(0, pixels.Color(0,0,0)); // Set the selected color for the LEDs
     pixels.show();
 }
 
