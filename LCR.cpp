@@ -45,7 +45,8 @@ void LCR::LCR_Init()
   
   pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
   pixels.begin(); // This initializes the NeoPixel library.
-  LCR_LedOFF();
+  pixels.setPixelColor(0, pixels.Color(0,0,0)); // Turn OFF the LEDs
+  pixels.show();
 }
 /************************************************************************************************
 *	Description:  These functions increase the number of pulses while the wheels are moving *
