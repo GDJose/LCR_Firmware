@@ -316,6 +316,7 @@ void LCR::LCR_LedOFF()
 void LCR::LCR_Sound(unsigned int note, unsigned int time)
 {
 	tone (8,note,time);
+	delay(time*1.30);
 }
 
 /************************************************************************************************
