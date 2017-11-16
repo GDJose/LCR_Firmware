@@ -1,3 +1,21 @@
+/*
+*Remote control with bumpers
+*
+*Try to control the car by using two bumpers and programming statements.
+*
+*---Blockly---
+** if - Button on the - Left = 1 AND Button on the - Right = 1
+**** Move right motor - Forwards - speed - 50
+**** Move left motor - Forwards - speed - 50
+** else if - Button on the - Left = 0 AND Button on the - Right = 1
+**** Move right motor - Backwards - speed - 50
+**** Move left motor - Forwards - speed - 50
+** else if - Button on the - Left = 0 AND Button on the - Right = 0
+**** Move right motor - Forwards - speed - 50
+**** Move left motor - Backwards - speed - 50
+** else
+**** Stop
+*/
 #include <LCR.h>
 
 LCR robot;

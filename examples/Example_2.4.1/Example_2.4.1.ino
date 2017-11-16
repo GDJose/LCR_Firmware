@@ -1,3 +1,18 @@
+/*
+*Reach the treasure
+*
+*Help the pirate to find the treasure, during the day. 
+*
+*---Blockly---
+** if - Light sensor on the - Right < 512
+**** Turn - Right
+** else if - Light sensor on the - Left < 512
+**** Turn - Left
+** else if - Light sensor on the - Right > 512
+**** Move - Forwards
+** else if - Light sensor on the - Left > 512
+**** Move - Backwards
+*/
 #include <LCR.h>
 
 LCR robot;

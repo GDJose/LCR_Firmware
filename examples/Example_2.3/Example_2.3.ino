@@ -1,3 +1,16 @@
+/*
+*Conditionals
+*
+*Check the sensor to make sure that it works properly.
+*
+*---Blockly---
+** if - Light sensor on the - Right > 512
+****Sound - G - duration - 1000
+****Sound - A - duration - 1000
+****Led Color
+****Delay - 0.5
+****Led Off
+*/
 #include <LCR.h>
 
 LCR robot;

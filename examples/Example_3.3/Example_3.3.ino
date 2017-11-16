@@ -1,3 +1,21 @@
+/*
+*IRArray
+*
+*Learn how the IRArray works and help The Educational Robot to detect the ravine. 
+*If you are too close, go backwards!
+*
+*---Blockly---
+** if - IR sensors over threshold 550
+**** Led Color
+**** No Sound
+** else
+**** Led off
+**** Sound - C - duration - 100
+**** Delay (seconds) - 0.1
+**** Sound - G# - duration - 100
+**** Delay (seconds) - 0.1
+*/
+
 #include <LCR.h>
 
 LCR robot;

@@ -1,3 +1,15 @@
+/*
+*Sound and leds
+*
+*Create a combination of lights and sounds. Communicate with your fellow pirates.
+*
+*---Blockly---
+** count - i from 0 to 4
+**** Led Color
+**** Delay (seconds) - 0.5
+**** Led Off
+**** Delay (seconds) - 1
+*/
 #include <LCR.h>
 
 int i;

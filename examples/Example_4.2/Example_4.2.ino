@@ -1,3 +1,19 @@
+/*
+*IRArray with 3 sensors. Learning ranges.
+*
+*Then, you will need to learn how the IRArray sensor works.
+*
+*---Blockly---
+** if - IR sensor - 1 - Threshold - 530
+**** Sound - C - duration - 1000
+**** Delay (seconds) - 1
+** else if - IR sensor - 2 - Threshold - 530
+**** Sound - F - duration - 1000
+**** Delay (seconds) - 1
+** else if - IR sensor - 3 - Threshold - 530
+**** Sound - A - duration - 1000
+**** Delay (seconds) - 1
+*/
 #include <LCR.h>
 
 LCR robot;

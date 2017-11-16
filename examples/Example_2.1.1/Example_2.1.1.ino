@@ -1,3 +1,15 @@
+/*
+*Sound and leds
+*
+*Create a combination of lights and sounds. Communicate with your fellow pirates.
+*
+*---Blockly---
+** Led Color
+** Delay (seconds) - 0.5
+** Led Off
+** Delay (seconds) - 1
+** End 
+*/
 #include <LCR.h>
 
 LCR robot;

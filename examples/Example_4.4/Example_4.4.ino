@@ -1,3 +1,22 @@
+/*
+*Follow the line with obstacles
+*
+*Help The Educational Robot to follow the crocodiles route. But remember, when you find the plant, you must need to stop for a minute. 
+*The Educational Robot needs this time.
+*
+*---Blockly---
+** if - Button on the - Right == 0
+**** Turn - Left
+**** Move - Forwards
+**** Turn - Right
+**** Move - Forwards
+**** Turn - Right
+**** Move - Forwards
+**** Turn - Left
+** else
+**** Follow line: Threshold - 530 - Speed - 50
+*/
+
 #include <LCR.h>
 
 LCR robot;
