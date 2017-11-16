@@ -1,3 +1,16 @@
+/*
+* Loops
+* Do it faster! Use loops.
+*
+*---Blockly---
+** count - i from 0 to 4
+**** Move - Forward
+**** Turn - Left
+**** Move - Forward
+**** Turn - Right
+**** Delay (seconds) - 1
+** End 
+*/
 #include <LCR.h>
 
 LCR robot;

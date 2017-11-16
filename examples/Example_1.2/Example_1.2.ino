@@ -1,3 +1,25 @@
+/*
+* Sequences and delay
+* It would be advisable to collect part of the resources that have fallen out of the boat. 
+* Could you help him?
+*
+*---Blockly---
+** Move - Forward
+** Turn - Left
+** Move - Forward
+** Turn - Right
+** Delay (seconds) - 1
+** Move - Forward
+** Turn - Left
+** Move - Forward
+** Turn - Right
+** Delay (seconds) - 1
+** Move - Forward
+** Turn - Left
+** Move - Forward
+** Turn - Right
+** End 
+*/
 #include <LCR.h>
 
 LCR robot;

@@ -1,3 +1,14 @@
+/*
+* Learning sequences
+* Help The Educational Robot to reach the island programming sequences.
+*
+*---Blockly---
+** Move - Forward
+** Turn - Left
+** Move - Forward
+** Turn - Right
+** End 
+*/
 #include <LCR.h>
 
 LCR robot;
