@@ -12,7 +12,7 @@ void setup()
 void loop()
 {
   if (robot.LCR_Bumper(0)== 0) {
-    robot.LCR_LedON();
+    robot.LCR_LedColor(255,255,255);
     robot.LCR_Delay(0.5);
     robot.LCR_LedOFF();
     robot.LCR_Delay(0.5);

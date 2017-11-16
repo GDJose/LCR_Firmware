@@ -13,7 +13,7 @@ void loop()
 {
   if (robot.LCR_IRArrayDetect(0,550)) 
   {
-    robot.LCR_LedON();
+    robot.LCR_LedColor(255,255,255);
     robot.LCR_NoSound();
   } 
   else 
